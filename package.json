@@ -3,6 +3,8 @@
     "@openzeppelin/contracts": "^4.8.2",
     "@rainbow-me/rainbowkit": "^0.12.7",
     "ethers": "^5.7.2",
+    "react-modal": "^3.16.1",
+    "truffle-plugin-verify": "^0.6.2",
     "wagmi": "^0.12.10",
     "web3": "^1.9.0"
   }

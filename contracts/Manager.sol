@@ -92,7 +92,8 @@ contract Manager {
         require(token.balanceOf(msg.sender) >= betPrice,"You need 2 tokens at least");
         require(token.transferFrom(msg.sender,owner,betPrice*10**18),"You need to approve token balance");
 
-        if (_matches[id_match][msg.sender] != 0) {
+        // Si el usuario no ha apostado antes
+        if (_matches[id_match][msg.sender] == 0) {
             _bets[id_match] += 1; 
         }
         _matches[id_match][msg.sender] = winner;
@@ -106,9 +107,9 @@ contract Manager {
         uint256 _tokenAmount = ethAmount/tokenPrice;
         address payable sender = payable(msg.sender);
         require(sender.balance >= ethAmount, "Not enough eth available");
-        require(token.balanceOf(owner) >= _tokenAmount*10**18, "Not enough tokens available");
+        require(token.balanceOf(owner) >= _tokenAmount* 1 ether, "Not enough tokens available");
             
-        transferTokens(sender, _tokenAmount*10**18); // llama a la función separada para transferir tokens
+        transferTokens(sender, _tokenAmount*1 ether); // llama a la función separada para transferir tokens
         //transferEth(owner, ethAmount); // llama a la función separada para transferir ETH
 
         emit TokenSold(sender, _tokenAmount);

@@ -1,33 +1,50 @@
-import { useState} from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import './App.css';
+import Modal from "react-modal";
 
 import logo from './logo.svg';
 import staticLogo from './logo-btt.png';
+//import { networks } from '../../truffle-config';
 
 //Conexión red Ganache
-const ganacheUrl = "http://localhost:8545";
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
 
+
 //Instancia contrato Token.sol 
 const tokenJson = require('./contracts/Token.json'); // si usas require()
-const tokenContract = new ethers.Contract(tokenJson.networks[5777].address, tokenJson.abi, signer);
+const tokenContract = new ethers.Contract(tokenJson.networks[80001].address, tokenJson.abi, signer);
 
 //Instancia contrato NFT.sol 
 const NFTJson = require('./contracts/NFT.json'); // si usas require()
-const NFTContract = new ethers.Contract(NFTJson.networks[5777].address, NFTJson.abi, signer);
+const NFTContract = new ethers.Contract(NFTJson.networks[80001].address, NFTJson.abi, signer);
 
 
 //Instancia contrato Manager.sol 
 const ManagerJson = require('./contracts/Manager.json');
-const ManagerContract = new ethers.Contract(ManagerJson.networks[5777].address, ManagerJson.abi, signer);
+const ManagerContract = new ethers.Contract(ManagerJson.networks[80001].address, ManagerJson.abi, signer);
+
+const modalStyles = {
+	overlay: {
+	  backgroundColor: "rgba(0, 0, 0, 0.5)"
+	},
+	content: {
+	  margin: "auto",
+	  top: "85%",
+	  left: "50%",
+	  transform: "translate(-50%, -50%)",
+	  overflow: "hidden",
+	  width: "50%",
+	  height: "80%"
+	},
+  };
 
 
 
 function App() {
 
-	//STATES
+	//METAMASK STATES
 	const { ethereum } = window;
 	const [haveMetamask, sethaveMetamask] = useState(true);
 	const [isConnected, setIsConnected] = useState(false);
@@ -35,43 +52,41 @@ function App() {
 	const [accountAddress, setAccountAddress] = useState(''); //Cuenta conectada
 	const [accountBalance, setAccountBalance] = useState(''); //Balance ether
 	const [btt_balance, setBTTBalance] = useState(0); //Balance BTT
+	const [networkUrl,setNetwork] = useState('')
 	
+	// TOKEN PRICE
 	const [tokenprice,setTokenPrice] = useState();
-
-	async function getTokenPrice() {
-		const _tokenprice = await ManagerContract.tokenPrice();
-		const aux = ethers.utils.formatEther(_tokenprice);
-		setTokenPrice(aux);
-	}
-
-	getTokenPrice();
 
 	// TABLES
 	const [tableMatches,setMatchesList] = useState([]);
 	const [listMatches,setMatches] = useState([]);
+
+	async function getTokenPrice() {
+		const _tokenprice = await ManagerContract.tokenPrice();
+		const aux = ethers.utils.formatEther(_tokenprice);
+		if (aux !== tokenprice) {
+			setTokenPrice(aux);
+		}
+	}
 
 	async function getMatchesTable() {
 
 		// Llamamos a la función getMatches()
 		const matches = await ManagerContract.getMatches();
 		setMatches(matches)
-	
+		
 		const updatedMatches = [];
 
 		for (let i = 0; i < matches.length; i++) {
 			const id = matches[i];
 			const creator = await ManagerContract.MatchCreator(id);
 			const bets = (await ManagerContract._bets(id)).toString();
-			
+				
 			updatedMatches.push({ id, creator, bets });
-		  }
+		}
 		setMatchesList(updatedMatches);
+	}		
 
-
-
-	}
-	  
-	getMatchesTable();
 	const MatchesRows = () => {
 		return tableMatches.map(item => (
 		  <tr key={item.id}>
@@ -91,21 +106,18 @@ function App() {
 		const nfts = await ManagerContract.getCatalog();
 		setNFTS(nfts);
 
-
 		const updatedNFTs = [];
 		for (let i = 0; i < nfts.length; i++) {
 			const id = nfts[i].toString();
 			const holder = await NFTContract.ownerOf(nfts[i]);
 			const price = (await ManagerContract.priceOfNFT(nfts[i])).toString();
 					
-
 			updatedNFTs.push({ id, holder, price });
 		}
-		
 		setNFTList(updatedNFTs);
 	}
 	  
-	getNFTsTable();
+	
 	const NFTRows = () => {
 		return catalog.map(item => (
 		  <tr key={item.id}>
@@ -117,7 +129,283 @@ function App() {
 	}
 
 
-	// INPUTS
+	//Renderizado de tablas al inicio	 
+	useEffect(() => {
+		  async function fetchData() {
+			getTokenPrice();
+			getMatchesTable();
+			getNFTsTable();
+		  }
+		  fetchData();
+	},);
+
+	// --------- METAMASK EVENTS ---------
+	async function handleMetamaskEvent() {
+		window.ethereum.on('accountsChanged', function (accountAddress) {
+		  // Time to reload your interface with accounts[0]!	  
+		  connectWallet();		  
+		})
+	
+		window.ethereum.on('networkChanged', function (networkUrl) {
+		  // Time to reload your interface with the new networkId
+		  const newNetwork = provider.getNetwork();
+		  if (newNetwork.name !== "maticmum") {
+			switchNetwork();
+			connectWallet();
+		  }		  
+		})
+	}
+	
+	handleMetamaskEvent();
+
+
+	async function switchNetwork() {
+		const id = 80001
+		try {			
+			await window.ethereum.request({
+			  method: 'wallet_switchEthereumChain',
+			  params: [
+				{
+				  chainId: "0x"+ id.toString(16)
+				}
+			  ]
+			});
+		  } catch (switchError) {
+			if (switchError.code === 4902) {
+			  try {
+				await window.ethereum.request({
+				  method: 'wallet_addEthereumChain',
+				  params: [
+					{
+						chainId: "0x"+ id.toString(16),
+						chainName: 'Mumbai Testnet',
+						rpcUrls: ['https://endpoints.omniatech.io/v1/matic/mumbai/public'],
+						nativeCurrency: {
+						  name: 'MATIC',
+						  symbol: 'MATIC',// 2-6 characters long
+						  decimals: 18,
+						},
+					},
+				  ],
+				});
+			  } catch (addError) {
+				alert(addError);
+			  }
+			}
+		  }
+	};
+
+	const [modalIsOpen, setModalIsOpen] = useState(false);
+
+	function openModal() {
+	  setModalIsOpen(true);
+	}
+  
+	function closeModal() {
+	  setModalIsOpen(false);
+	}
+
+	
+
+
+
+	/////////////////
+	//LÓGICA BOTONES//
+	/////////////////
+
+	//Conexión con MetaMask y extracción de balances
+	const connectWallet = async () => {
+		try {
+			if (!ethereum) {
+				sethaveMetamask(false);
+			}
+			const networkUrl = await provider.getNetwork();
+			if (networkUrl.name !== "maticmum") {
+				await switchNetwork();
+			}	
+			setNetwork("maticmum");
+
+			const accounts = await ethereum.request({
+				method: 'eth_requestAccounts',
+			});
+			setAccountAddress(accounts[0]); //Ether balance
+
+			let balance = await provider.getBalance(accounts[0]);
+			let bal = ethers.utils.formatEther(balance);
+			setAccountBalance(bal); //balance de wei a ether
+
+			const btt_balance = await tokenContract.balanceOf(accounts[0]);
+			let btt_bal = ethers.utils.formatEther(btt_balance); 
+			setBTTBalance(btt_bal); //balance token ERC-20 propio
+
+			setIsConnected(true); 
+
+		} catch (error) {
+			setIsConnected(false);
+		}
+	};
+
+	//Buy BTT tokens
+	const BuyBTTokens = async () => {
+		if (isConnected === true){
+			if (!isNaN(buy_btt_value)){
+				try{
+					const __tokenprice = await ManagerContract.tokenPrice();
+					const ethAmount = (buy_btt_value*ethers.utils.formatEther(__tokenprice)).toString();
+					const weiAmount = ethers.utils.parseEther(ethAmount);
+					const tx = await ManagerContract.buyTokens(weiAmount);
+					await tx.wait(); // Esperar a que la transacción se confirme
+					const new_bal = await tokenContract.balanceOf(accountAddress);
+					setBTTBalance(ethers.utils.formatEther(new_bal));
+					alert("BTT Comprados")
+				} catch (error) {
+					alert("Error al comprar tokens: " + error.message);
+				}
+			} else {
+				alert("Select parameters")
+			}
+		} else {
+			alert("Conect your wallet")
+		}
+
+	};
+
+	//Store bet
+	const StoreBet = async () => {
+		if (isConnected === true){
+			if (!isNaN(selectedWinner) && isNaN(selectedMatch.toString())) {
+				try{
+					const bet_price = await ManagerContract.betPrice();
+					const bet_price_wei = ethers.utils.parseEther(bet_price.toString());
+					const address_manager = ManagerContract.address
+
+					const approved = await tokenContract.allowance(accountAddress,address_manager)
+					if (approved >= bet_price_wei) {
+						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
+						await tx.wait(); // Esperar a que la transacción se confirme
+					}
+					else {
+						alert("Primero debe aprobar fondos BTT al contrato")
+						
+						const tx_appr = await tokenContract.approve(address_manager,bet_price_wei);
+						await tx_appr.wait();
+						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
+						await tx.wait(); // Esperar a que la transacción se confirme
+					}
+
+					await getMatchesTable();
+				} catch (error) {
+					alert("Error al comprar tokens: " + error.message);
+				}
+			} else {
+				alert("Select parameters")
+			}
+
+		} else {
+			alert("Conect your wallet")
+		}
+
+	};
+
+	//Buy NFTS
+	const BuyNFT = async() => {
+		if (isConnected === true){
+			if (!isNaN(selectedNFTtoBuy)) {
+				try{
+					const approved = await tokenContract.allowance(accountAddress,ManagerContract.address)
+					const price_ = await ManagerContract.priceOfNFT(selectedNFTtoBuy);
+					if (approved >= price_) {
+						const tx = await ManagerContract.buyNFT(selectedNFTtoBuy);
+						await tx.wait(); // Esperar a que la transacción se confirme
+						
+					}else{
+						alert("Debe aprobar fondos BTT al contrato")
+						const tx_appr = await NFTContract.approve(ManagerContract.address,price_);
+						await tx_appr.wait();
+						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
+						await tx.wait(); // Esperar a que la transacción se confirme
+						
+
+					}
+					await getNFTsTable();
+				} catch (error) {
+					alert("Error al comprar tokens: " + error.message);
+				}
+			} else {
+				alert("Select parameters")
+			}
+
+		} else {
+			alert("Conect your wallet")
+		}
+
+	};
+	//List New NFT
+	const ListNewNFT = async() => {
+		if (isConnected === true){
+			if (!isNaN(list_nft_id+list_nft_price)) {
+				try{
+					const tx = await ManagerContract.ListNFT(list_nft_id,list_nft_price);
+					await tx.wait(); // Esperar a que la transacción se confirme
+					const tx_appr = await NFTContract.approve(ManagerContract.address,selectedNFTtoBuy);
+					await tx_appr.wait();
+
+					await getNFTsTable();
+
+				} catch (error) {
+					alert("Error al comprar tokens: " + error.message);
+				}
+				
+			} else {
+				alert("Select parameters")
+			}
+		} else {
+			alert("Conect your wallet")
+		}
+	};
+
+	//Change NFT State
+	const changeNFTState = async() => {
+		if (isConnected === true){
+			if (!isNaN(selectedNFTtoChange)) {
+				try{
+					const tx = await ManagerContract.changeStateSale(selectedNFTtoChange,false);
+					await tx.wait(); // Esperar a que la transacción se confirme
+					await getNFTsTable();
+				} catch (error) {
+					alert("Error al comprar tokens: " + error.message);
+				}
+			} else {
+				alert("Select parameters")
+			}
+
+		} else {
+			alert("Conect your wallet")
+		}
+	};
+
+	//Change Price
+	const changeNFTPrice = async() => {
+		if (isConnected === true ){
+			if (!isNaN(selectedNFTtoChangePrice+selectedNFTNewPrice)){
+				try{
+					const tx = await ManagerContract.changePrice(selectedNFTtoChangePrice,selectedNFTNewPrice);
+					await tx.wait(); // Esperar a que la transacción se confirme
+
+					await getNFTsTable();
+				} catch (error) {
+					alert("Error al cambiar el precior del NFT: " + error.message);
+				}
+				
+			}else {
+				alert("Select parameters")
+			}
+		} else {
+			alert("Conect your wallet")
+		}
+	};
+
+		// INPUTS
 	//buy BTT tokens inputs
 	const [buy_btt_value, setBuyBTT] = useState(2);
 	const handleBuyBTT = (event) => {
@@ -170,186 +458,21 @@ function App() {
 		setSelectedNFTnewprice(parseInt(event.target.value));
 	}
 
+	const [currentImage, setCurrentImage] = useState(0);
 
-	/////////////////
-	//LÓGICA BOTONES//
-	/////////////////
+	const nft_links = [
+		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_0.png",
+		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_1.png",
+		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_2.png"
+	];
 
-	//Conexión con MetaMask y extracción de balances
-	const connectWallet = async () => {
-		try {
-			if (!ethereum) {
-				sethaveMetamask(false);
-			}
+	function handlePreviousImage() {
+		setCurrentImage((currentImage - 1 + nft_links.length) % nft_links.length);
+	}
 
-			const accounts = await ethereum.request({
-				method: 'eth_requestAccounts',
-			});
-
-			let balance = await provider.getBalance(accounts[0]);
-			let bal = ethers.utils.formatEther(balance);
-
-
-			setAccountAddress(accounts[0]); //Ether balance
-			setAccountBalance(bal); //balance de wei a ether
-			setIsConnected(true); 
-
-			
-			const btt_balance = await tokenContract.balanceOf(accounts[0]);
-			let btt_bal = ethers.utils.formatEther(btt_balance); 
-			setBTTBalance(btt_bal); //balance token ERC-20 propio
-
-		} catch (error) {
-			setIsConnected(false);
-		}
-	};
-
-	//Buy BTT tokens
-	const BuyBTTokens = async () => {
-		if (isConnected === true){
-			if (!isNaN(buy_btt_value)){
-				try{
-					const __tokenprice = await ManagerContract.tokenPrice();
-					const ethAmount = (buy_btt_value*ethers.utils.formatEther(__tokenprice)).toString();
-					const weiAmount = ethers.utils.parseEther(ethAmount);
-					const tx = await ManagerContract.buyTokens(weiAmount);
-					await tx.wait(); // Esperar a que la transacción se confirme
-					alert("BTT Comprados")
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-			} else {
-				alert("Select parameters")
-			}
-		} else {
-			alert("Conect your wallet")
-		}
-
-	};
-
-	//Store bet
-	const StoreBet = async () => {
-		if (isConnected === true){
-			if (!isNaN(selectedWinner) && isNaN(selectedMatch.toString())) {
-				try{
-					const bet_price = await ManagerContract.betPrice();
-					const bet_price_wei = ethers.utils.parseEther(bet_price.toString());
-					const address_manager = ManagerContract.address
-
-					const approved = await tokenContract.allowance(accountAddress,address_manager)
-					if (approved >= bet_price_wei) {
-						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
-						await tx.wait(); // Esperar a que la transacción se confirme
-					}
-					else {
-						alert("Primero debe aprobar fondos BTT al contrato")
-						
-						const tx_appr = await tokenContract.approve(address_manager,bet_price_wei);
-						await tx_appr.wait();
-						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
-						await tx.wait(); // Esperar a que la transacción se confirme
-					}
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-			} else {
-				alert("Select parameters")
-			}
-
-		} else {
-			alert("Conect your wallet")
-		}
-
-	};
-
-	//Buy NFTS
-	const BuyNFT = async() => {
-		if (isConnected === true){
-			if (!isNaN(selectedNFTtoBuy)) {
-				try{
-					const approved = await tokenContract.allowance(accountAddress,ManagerContract.address)
-					const price_ = await ManagerContract.priceOfNFT(selectedNFTtoBuy);
-					if (approved >= price_) {
-						const tx = await ManagerContract.buyNFT(selectedNFTtoBuy);
-						await tx.wait(); // Esperar a que la transacción se confirme
-					}else{
-						alert("Debe aprobar fondos BTT al contrato")
-						const tx_appr = await NFTContract.approve(ManagerContract.address,price_);
-						await tx_appr.wait();
-						const tx = await ManagerContract.storeBet(selectedMatch,selectedWinner);
-						await tx.wait(); // Esperar a que la transacción se confirme
-
-					}
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-			} else {
-				alert("Select parameters")
-			}
-
-		} else {
-			alert("Conect your wallet")
-		}
-
-	};
-	//List New NFT
-	const ListNewNFT = async() => {
-		if (isConnected === true){
-			if (!isNaN(list_nft_id+list_nft_price)) {
-				try{
-					const tx = await ManagerContract.ListNFT(list_nft_id,list_nft_price);
-					await tx.wait(); // Esperar a que la transacción se confirme
-					const tx_appr = await NFTContract.approve(ManagerContract.address,selectedNFTtoBuy);
-					await tx_appr.wait();
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-			} else {
-				alert("Select parameters")
-			}
-		} else {
-			alert("Conect your wallet")
-		}
-	};
-
-	//Change NFT State
-	const changeNFTState = async() => {
-		if (isConnected === true){
-			if (!isNaN(selectedNFTtoChange)) {
-				try{
-					const tx = await ManagerContract.changeStateSale(selectedNFTtoChange,false);
-					await tx.wait(); // Esperar a que la transacción se confirme
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-			} else {
-				alert("Select parameters")
-			}
-
-		} else {
-			alert("Conect your wallet")
-		}
-	};
-
-	//Change Price
-	const changeNFTPrice = async() => {
-		if (isConnected === true ){
-			if (!isNaN(selectedNFTtoChangePrice+selectedNFTNewPrice)){
-				try{
-					const tx = await ManagerContract.changePrice(selectedNFTtoChangePrice,selectedNFTNewPrice);
-					await tx.wait(); // Esperar a que la transacción se confirme
-				} catch (error) {
-					alert("Error al comprar tokens: " + error.message);
-				}
-				
-			}else {
-				alert("Select parameters")
-			}
-		} else {
-			alert("Conect your wallet")
-		}
-	};
-
+	function handleNextImage() {
+		setCurrentImage((currentImage + 1) % nft_links.length);
+	}
 
 
 
@@ -373,14 +496,14 @@ function App() {
 								</div>
 								<div className="card-row">
 									<h4 >Network:</h4>
-									<p>{ganacheUrl}</p>
+									<p>{networkUrl}</p>
 								</div>
 								<div className="card-row">
-									<h4 >Wallet Ether Balance:</h4>
+									<h4 >Matic Balance:</h4>
 									<p>{accountBalance}</p>
 								</div>
 								<div className="card-row">
-									<h4 >Wallet BTT Balance:</h4>
+									<h4 >BTT Balance:</h4>
 									<p>{btt_balance}</p>
 								</div>
 							</div>
@@ -388,7 +511,7 @@ function App() {
 							<img src={logo} className="App-logo" alt="logo" />)}
 
 						{isConnected ? (
-							<p className="info" style={{position: 'fixed', bottom: '88.5%', left: '96%', transform: 'translate(-100%, 70%)'}}>🎉 Connected Successfully</p>
+							<p className="info" style={{position: 'fixed', bottom: '93.5%', left: '96%', transform: 'translate(-100%, 70%)'}}>🎉 Connected Successfully</p>
 						) : (
 							<button className="btn" onClick={connectWallet} style={{position: 'fixed', bottom: '92%', left: '90%', transform: 'translate(-50%, 50%)'}}>
 								Connect your wallet
@@ -437,6 +560,34 @@ function App() {
 				<span style={{position: 'fixed', bottom: '55.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Ganador</span>	
 
 			</div>
+			<div>
+				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '30%', left: '7%', 
+						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
+				<Modal
+					isOpen={modalIsOpen}
+					onRequestClose={closeModal}
+					style={modalStyles}>
+					<div className="gallery">
+						<img
+							src={nft_links[currentImage]}
+							alt={currentImage}
+							style={{
+							width: "80%",
+							height: "20%",
+						}}/>
+						<div style={{position: "absolute", bottom: 25, width: "76.8%", backgroundColor: "rgba(0, 0, 0, 0.7)", textAlign: "center"}}>
+							<p style={{color: "white", margin: "10px auto"}}>NFT ID: {currentImage}</p>
+						</div>
+						<button className='btn' onClick={handlePreviousImage} style={{position: 'fixed', bottom: '20%', left: '88%', 
+									transform: 'translate(-50%, 50%)'}}>Previous</button>
+						<button className='btn' onClick={handleNextImage} style={{position: 'fixed', bottom: '10%', left: '88%', 
+									transform: 'translate(-50%, 50%)'}}>Next</button>
+					</div>
+					<div>
+
+					</div>
+				</Modal>
+			</div>
 			<div className="table-container-nfts">
 				<table className = "table" id = "table-nfts">
 					<thead>
@@ -447,7 +598,8 @@ function App() {
 						</tr>
 					</thead>
 					<tbody>
-						{NFTRows()}
+						{NFTRows()}	
+											
 					</tbody>
 				</table>
 				<button className='btn' onClick={BuyNFT} style={{position: 'fixed', bottom: '45%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy NFTs</button>
