@@ -1,3 +1,5 @@
+require("dotenv") 
+
 module.exports = {
   contracts_build_directory: "./client/src/contracts",
   networks: {
@@ -29,6 +31,6 @@ module.exports = {
     'truffle-plugin-verify'
   ],
   api_keys: {
-    polygonscan: "KRE439XFNQC48XM4X8R7SR9KMMQYXRVNTZ",
+    polygonscan: process.env.POLYGON_APY_KEY,
   },
 };
