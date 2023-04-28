@@ -5,6 +5,15 @@ import Modal from "react-modal";
 
 import logo from './logo.svg';
 import staticLogo from './logo-btt.png';
+
+
+
+const nft_links = [
+	"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_0.png",
+	"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_1.png",
+	"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_2.png"
+];
+
 //import { networks } from '../../truffle-config';
 
 //Conexión red Ganache
@@ -460,11 +469,8 @@ function App() {
 
 	const [currentImage, setCurrentImage] = useState(0);
 
-	const nft_links = [
-		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_0.png",
-		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_1.png",
-		"https://bafybeie2qulse2uduqt3lfank2lm6bixqrlhc7oh2khtcxrxegjeqwfoz4.ipfs.nftstorage.link/NFT_2.png"
-	];
+
+	//Galería imágenes
 
 	function handlePreviousImage() {
 		setCurrentImage((currentImage - 1 + nft_links.length) % nft_links.length);
@@ -474,8 +480,7 @@ function App() {
 		setCurrentImage((currentImage + 1) % nft_links.length);
 	}
 
-
-
+	
 	return (
 
 		<div className="App">
