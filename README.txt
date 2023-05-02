@@ -5,3 +5,6 @@ Adquiere el token BTT y realiza apuestas en los eventos o compra y vende NFTs de
 3. Realiza apuestas o interactua con el MarketPlace
 
 La información que se muestra procede de proveedores y mecanismos descentralizados. 
+
+
+*El contrato Oracle no ha sido implementado en la capa de cliente. En la carpeta se encuentran más indicaciones.
