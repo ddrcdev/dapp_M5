@@ -512,6 +512,7 @@ function App() {
 									<p>{btt_balance}</p>
 								</div>
 							</div>
+
 						) : (
 							<img src={logo} className="App-logo" alt="logo" />)}
 
@@ -528,44 +529,33 @@ function App() {
 				)}
 			</header>
 			<div className="table-container">
-				<table id="table-matches">
-					<thead>
-						<tr>
-						<th>Match ID</th>
-						<th>Event Creator</th>
-						<th>Bets number</th>
-						</tr>
-					</thead>
-					<tbody>
-						{MatchesRows()}
-					</tbody>
-				</table>
-				<button className='btn' onClick={BuyBTTokens} style={{position: 'fixed', bottom: '67%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy BTT Tokens</button>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '68.3%', left: '91%', transform: 'translate(-50%, 50%)'}}>1 BTT = {tokenprice} ether </span>	
-				<input type="number" min="2" step="1" value={buy_btt_value} onChange={handleBuyBTT} style={{position: 'fixed', bottom: '65%', left: '93%', transform: 'translate(-50%, 50%)'}}/>				
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '65.3%', left: '85%', transform: 'translate(-50%, 50%)'}}>Cantidad BTT</span>	
-
-				<button className='btn' onClick={StoreBet} style={{position: 'fixed', bottom: '57%', left: '75%', transform: 'translate(-50%, 50%)'}}>Store Bet</button>
-				
-				<select value={selectedMatch} onChange={handleMatchChange} style={{position: 'fixed', bottom: '58%', left: '93%', transform: 'translate(-50%, 50%)'}}>
-					<option value="">Seleccione una evento</option>
-					{listMatches.map((match, index) => (
-					<option key={index} value={match}>
-					{match}
-					</option>
-				))}
-				</select>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '58.3%', left: '84.5%', transform: 'translate(-50%, 50%)',}}>Evento</span>	
-
-				<select value={selectedWinner} onChange={handleWinnerChange} style={{position: 'fixed', bottom: '55%', left: '93%', transform: 'translate(-50%, 50%)'}}>
-					<option value="">Seleccione una ganador</option>
-					<option value="1">Local</option>
-					<option value="2">Visitante</option>
-				</select>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '55.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Ganador</span>	
-
-				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', 
-						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
+				<div>
+					<table>
+						<thead>
+							<tr>
+							<th>Match ID</th>
+							<th>Event Creator</th>
+							<th>Bets number</th>
+							</tr>
+						</thead>
+						<tbody>
+							{MatchesRows()}
+						</tbody>
+					</table>
+				</div>
+				<div>				
+					<table>
+						<thead>
+							<tr>
+							<th>NFT ID</th>
+							<th>Holder</th>
+							<th>Price</th>
+							</tr>
+						</thead>
+						<tbody>
+							{NFTRows()}												
+						</tbody>
+					</table>
 				<Modal
 					isOpen={modalIsOpen}
 					onRequestClose={closeModal}
@@ -587,61 +577,78 @@ function App() {
 									transform: 'translate(-50%, 50%)'}}>Next</button>
 					</div>
 				</Modal>
-				<table className = "table" id = "table-nfts">
-					<thead>
-						<tr>
-						<th>NFT ID</th>
-						<th>Holder</th>
-						<th>Price</th>
-						</tr>
-					</thead>
-					<tbody>
-						{NFTRows()}												
-					</tbody>
-				</table>
-				<button className='btn' onClick={BuyNFT} style={{position: 'fixed', bottom: '45%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy NFTs</button>
-				<select value={selectedNFTtoBuy} onChange={handleNFTtoBuyChange} style={{position: 'fixed', bottom: '45%', left: '93%', transform: 'translate(-60%, 50%)'}}>
-					<option value="">Seleccione un NFT</option>
-					{listNFTS.map((nft, index) => (
-						<option key={index} value={nft}>
-						{nft.toString()}
-						</option>
-					))}
-				</select>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '45.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
+				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', 
+						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
+				</div>
 
-				<button className='btn' onClick={ListNewNFT} style={{position: 'fixed', bottom: '35%', left: '75%', transform: 'translate(-50%, 50%)'}}>List new NFT</button>
-				<input type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '36.8%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
-				<input type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '33.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Price</span>	
+				<div className='buyContainer'>
+					<button className='btn' onClick={BuyBTTokens} style={{position: 'fixed', bottom: '67%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy BTT Tokens</button>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '68.3%', left: '85%', transform: 'translate(-0%, 50%)'}}>1 BTT = {tokenprice} ether </span>	
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '65.3%', left: '82%', transform: 'translate(-0%, 50%)'}}>Cantidad BTT</span>	
+						<input type="number" min="2" step="1" value={buy_btt_value} onChange={handleBuyBTT} style={{position: 'fixed', bottom: '65%', left: '89%', transform: 'translate(-0%, 50%)'}}/>				
 
-				<button className='btn' onClick={changeNFTState} style={{position: 'fixed', bottom: '25%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change NFT State</button>
-				<select value={selectedNFTtoChange} onChange={handleNFTtoStateChange} style={{position: 'fixed', bottom: '25%', left: '93%', transform: 'translate(-60%, 50%)'}}>
-					<option value="">Seleccione un NFT</option>
-					{listNFTS.map((nft, index) => (
-						<option key={index} value={nft}>
-						{nft.toString()}
-						</option>
-					))}
-				</select>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '25.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
+
+					<button className='btn' onClick={StoreBet} style={{position: 'fixed', bottom: '57%', left: '75%', transform: 'translate(-50%, 50%)'}}>Store Bet</button>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '58.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Evento</span>	
+						<select className='select-choice' value={selectedMatch} onChange={handleMatchChange} style={{position: 'fixed', bottom: '58%', left: '87.5%', transform: 'translate(-0%, 50%)'}}>
+							<option value="">Seleccione una evento</option>
+							{listMatches.map((match, index) => (
+							<option key={index} value={match}>
+							{match}
+							</option>
+						))}
+						</select>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '55.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Ganador</span>
+						<select className='select-choice' value={selectedWinner} onChange={handleWinnerChange} style={{position: 'fixed', bottom: '55%', left: '87.5%', transform: 'translate(-0%, 50%)'}}>
+							<option value="">Seleccione una ganador</option>
+							<option value="1">Local</option>
+							<option value="2">Visitante</option>
+						</select>
+	
+
+					<button className='btn' onClick={BuyNFT} style={{position: 'fixed', bottom: '45%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy NFTs</button>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '45.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
+						<select className='select-choice' value={selectedNFTtoBuy} onChange={handleNFTtoBuyChange} style={{position: 'fixed', bottom: '45%', left: '87.5%', transform: 'translate(-0%, 50%)'}}>
+							<option value="">Seleccione un NFT</option>
+							{listNFTS.map((nft, index) => (
+								<option key={index} value={nft}>
+								{nft.toString()}
+								</option>
+							))}
+						</select>
+						
+					<button className='btn' onClick={ListNewNFT} style={{position: 'fixed', bottom: '35%', left: '75%', transform: 'translate(-50%, 50%)'}}>List new NFT</button>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '36.8%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
+						<input type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '33.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Price</span>	
+						<input type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+						
 				
-				<button className='btn' onClick={changeNFTPrice} style={{position: 'fixed', bottom: '13%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change Price</button>  
-				<select value={selectedNFTtoChangePrice} onChange={handleNFTtoNewPriceChange} style={{position: 'fixed', bottom: '14%', left: '93%', transform: 'translate(-60%, 50%)'}}>
-					<option value="">Seleccione un NFT</option>
-					{listNFTS.map((nft, index) => (
-						<option key={index} value={nft}>
-						{nft.toString()}
-						</option>
-					))}
-				</select>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '14.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
-				<input type="number" min="10" step="10" value={selectedNFTNewPrice} onChange={handleNewPriceChange} style={{position: 'fixed', bottom: '11%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span className = 'txt-span' style={{position: 'fixed', bottom: '11.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Price</span>	
-				
-			</div>			
+					<button className='btn' onClick={changeNFTState} style={{position: 'fixed', bottom: '25%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change NFT State</button>
+						<span className = 'txt-span' style={{position: 'fixed', bottom: '25.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
+						<select className='select-choice' value={selectedNFTtoChange} onChange={handleNFTtoStateChange} style={{position: 'fixed', bottom: '25%', left: '87.5%', transform: 'translate(-0%, 50%)'}}>
+							<option value="">Seleccione un NFT</option>
+							{listNFTS.map((nft, index) => (
+								<option key={index} value={nft}>
+								{nft.toString()}
+								</option>
+							))}
+						</select>
 
+					<button className='btn' onClick={changeNFTPrice} style={{position: 'fixed', bottom: '13%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change Price</button>  
+					<span className = 'txt-span' style={{position: 'fixed', bottom: '14.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
+					<select className='select-choice' value={selectedNFTtoChangePrice} onChange={handleNFTtoNewPriceChange} style={{position: 'fixed', bottom: '14%', left: '87.5%', transform: 'translate(-0%, 50%)'}}>
+						<option value="">Seleccione un NFT</option>
+						{listNFTS.map((nft, index) => (
+							<option key={index} value={nft}>
+							{nft.toString()}
+							</option>
+						))}
+					</select>
+					<span className = 'txt-span' style={{position: 'fixed', bottom: '11.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Price</span>	
+					<input type="number" min="10" step="10" value={selectedNFTNewPrice} onChange={handleNewPriceChange} style={{position: 'fixed', bottom: '11%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+				</div>	
+			</div>
 		</div>
 	);
 }
