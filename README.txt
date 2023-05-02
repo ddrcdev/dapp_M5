@@ -7,4 +7,4 @@ Adquiere el token BTT y realiza apuestas en los eventos o compra y vende NFTs de
 La información que se muestra procede de proveedores y mecanismos descentralizados. 
 
 
-*El contrato Oracle no ha sido implementado en la capa de cliente. En la carpeta se encuentran más indicaciones.
+*El contrato Oracle no ha sido implementado en la capa de cliente, pero sí desplegado en la testnet y propuestas las modificaciones necasarias para su implementacion en la carpeta client/src/oracle
