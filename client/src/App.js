@@ -493,23 +493,16 @@ function App() {
 						{isConnected ? (
 							<div className="card" style={{position: 'fixed', bottom: '92%', left: '93%', transform: 'translate(-80%, 70%)'}}>
 								<div className="card-row">
-									<h4>Wallet Address:</h4>
-									<p>
-										{accountAddress.slice(0, 4)}...
-										{accountAddress.slice(38, 42)}
-									</p>
+									<h4>Wallet Address: {accountAddress.slice(0, 4)}...{accountAddress.slice(38, 42)}</h4>
 								</div>
 								<div className="card-row">
-									<h4 >Network:</h4>
-									<p>{networkUrl}</p>
+									<h4 >Network: {networkUrl}</h4>
 								</div>
 								<div className="card-row">
-									<h4 >Matic Balance:</h4>
-									<p>{accountBalance}</p>
+									<h4 >Matic Balance: {accountBalance}</h4>
 								</div>
 								<div className="card-row">
-									<h4 >BTT Balance:</h4>
-									<p>{btt_balance}</p>
+									<h4 >BTT Balance: {btt_balance}</h4>
 								</div>
 							</div>
 
@@ -577,15 +570,14 @@ function App() {
 									transform: 'translate(-50%, 50%)'}}>Next</button>
 					</div>
 				</Modal>
-				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', 
-						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
+				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
 				</div>
 
-				<div className='buyContainer'>
+				<div className='inputs-container'>
 					<button className='btn' onClick={BuyBTTokens} style={{position: 'fixed', bottom: '67%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy BTT Tokens</button>
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '68.3%', left: '85%', transform: 'translate(-0%, 50%)'}}>1 BTT = {tokenprice} ether </span>	
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '65.3%', left: '82%', transform: 'translate(-0%, 50%)'}}>Cantidad BTT</span>	
-						<input type="number" min="2" step="1" value={buy_btt_value} onChange={handleBuyBTT} style={{position: 'fixed', bottom: '65%', left: '89%', transform: 'translate(-0%, 50%)'}}/>				
+						<input type="number" min="2" step="1" value={buy_btt_value} onChange={handleBuyBTT} style={{position: 'fixed', bottom: '65%', left: '89%', transform: 'translate(-0%, 50%)',maxWidth:'7%'}}/>				
 
 
 					<button className='btn' onClick={StoreBet} style={{position: 'fixed', bottom: '57%', left: '75%', transform: 'translate(-50%, 50%)'}}>Store Bet</button>
@@ -619,9 +611,9 @@ function App() {
 						
 					<button className='btn' onClick={ListNewNFT} style={{position: 'fixed', bottom: '35%', left: '75%', transform: 'translate(-50%, 50%)'}}>List new NFT</button>
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '36.8%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
-						<input type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+						<input className='select-input'type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '33.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Price</span>	
-						<input type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+						<input className='select-input'type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
 						
 				
 					<button className='btn' onClick={changeNFTState} style={{position: 'fixed', bottom: '25%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change NFT State</button>
@@ -646,7 +638,7 @@ function App() {
 						))}
 					</select>
 					<span className = 'txt-span' style={{position: 'fixed', bottom: '11.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Price</span>	
-					<input type="number" min="10" step="10" value={selectedNFTNewPrice} onChange={handleNewPriceChange} style={{position: 'fixed', bottom: '11%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+					<input className='select-input' type="number" min="10" step="10" value={selectedNFTNewPrice} onChange={handleNewPriceChange} style={{position: 'fixed', bottom: '11%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
 				</div>	
 			</div>
 		</div>
