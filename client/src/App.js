@@ -516,7 +516,7 @@ function App() {
 							<img src={logo} className="App-logo" alt="logo" />)}
 
 						{isConnected ? (
-							<p className="info" style={{position: 'flex', bottom: '93.5%', left: '96%', transform: 'translate(-100%, 70%)'}}>🎉 Connected Successfully</p>
+							<span className="span-txt" style={{position: 'fixed',bottom: '94%', left: '93%',transform: 'translate(-70%, 100%)',color: '#61dafb'}}>🎉 Connected Successfully</span>
 						) : (
 							<button className="btn" onClick={connectWallet} style={{position: 'fixed', bottom: '92%', left: '90%', transform: 'translate(-50%, 50%)'}}>
 								Connect your wallet
@@ -541,9 +541,9 @@ function App() {
 					</tbody>
 				</table>
 				<button className='btn' onClick={BuyBTTokens} style={{position: 'fixed', bottom: '67%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy BTT Tokens</button>
-				<span style={{position: 'fixed', bottom: '68.3%', left: '91%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>1 BTT = {tokenprice} ether </span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '68.3%', left: '91%', transform: 'translate(-50%, 50%)'}}>1 BTT = {tokenprice} ether </span>	
 				<input type="number" min="2" step="1" value={buy_btt_value} onChange={handleBuyBTT} style={{position: 'fixed', bottom: '65%', left: '93%', transform: 'translate(-50%, 50%)'}}/>				
-				<span style={{position: 'fixed', bottom: '65.3%', left: '85%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Cantidad BTT</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '65.3%', left: '85%', transform: 'translate(-50%, 50%)'}}>Cantidad BTT</span>	
 
 				<button className='btn' onClick={StoreBet} style={{position: 'fixed', bottom: '57%', left: '75%', transform: 'translate(-50%, 50%)'}}>Store Bet</button>
 				
@@ -555,14 +555,14 @@ function App() {
 					</option>
 				))}
 				</select>
-				<span style={{position: 'fixed', bottom: '58.3%', left: '84.5%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Evento</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '58.3%', left: '84.5%', transform: 'translate(-50%, 50%)',}}>Evento</span>	
 
 				<select value={selectedWinner} onChange={handleWinnerChange} style={{position: 'fixed', bottom: '55%', left: '93%', transform: 'translate(-50%, 50%)'}}>
 					<option value="">Seleccione una ganador</option>
 					<option value="1">Local</option>
 					<option value="2">Visitante</option>
 				</select>
-				<span style={{position: 'fixed', bottom: '55.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Ganador</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '55.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Ganador</span>	
 
 				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', 
 						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
@@ -608,13 +608,13 @@ function App() {
 						</option>
 					))}
 				</select>
-				<span style={{position: 'fixed', bottom: '45.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>NFT Id</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '45.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
 
 				<button className='btn' onClick={ListNewNFT} style={{position: 'fixed', bottom: '35%', left: '75%', transform: 'translate(-50%, 50%)'}}>List new NFT</button>
 				<input type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span style={{position: 'fixed', bottom: '36.8%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>NFT Id</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '36.8%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
 				<input type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span style={{position: 'fixed', bottom: '33.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Price</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '33.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Price</span>	
 
 				<button className='btn' onClick={changeNFTState} style={{position: 'fixed', bottom: '25%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change NFT State</button>
 				<select value={selectedNFTtoChange} onChange={handleNFTtoStateChange} style={{position: 'fixed', bottom: '25%', left: '93%', transform: 'translate(-60%, 50%)'}}>
@@ -625,7 +625,7 @@ function App() {
 						</option>
 					))}
 				</select>
-				<span style={{position: 'fixed', bottom: '25.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>NFT Id</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '25.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
 				
 				<button className='btn' onClick={changeNFTPrice} style={{position: 'fixed', bottom: '13%', left: '75%', transform: 'translate(-50%, 50%)'}}>Change Price</button>  
 				<select value={selectedNFTtoChangePrice} onChange={handleNFTtoNewPriceChange} style={{position: 'fixed', bottom: '14%', left: '93%', transform: 'translate(-60%, 50%)'}}>
@@ -636,9 +636,9 @@ function App() {
 						</option>
 					))}
 				</select>
-				<span style={{position: 'fixed', bottom: '14.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>NFT Id</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '14.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>NFT Id</span>	
 				<input type="number" min="10" step="10" value={selectedNFTNewPrice} onChange={handleNewPriceChange} style={{position: 'fixed', bottom: '11%', left: '93%', transform: 'translate(-50%, 50%)'}}/>
-				<span style={{position: 'fixed', bottom: '11.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Price</span>	
+				<span className = 'txt-span' style={{position: 'fixed', bottom: '11.3%', left: '86%', transform: 'translate(-50%, 50%)',}}>Price</span>	
 				
 			</div>			
 
