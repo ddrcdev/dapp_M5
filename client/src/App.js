@@ -516,7 +516,7 @@ function App() {
 							<img src={logo} className="App-logo" alt="logo" />)}
 
 						{isConnected ? (
-							<p className="info" style={{position: 'fixed', bottom: '93.5%', left: '96%', transform: 'translate(-100%, 70%)'}}>🎉 Connected Successfully</p>
+							<p className="info" style={{position: 'flex', bottom: '93.5%', left: '96%', transform: 'translate(-100%, 70%)'}}>🎉 Connected Successfully</p>
 						) : (
 							<button className="btn" onClick={connectWallet} style={{position: 'fixed', bottom: '92%', left: '90%', transform: 'translate(-50%, 50%)'}}>
 								Connect your wallet
@@ -527,7 +527,7 @@ function App() {
 					<p>Please Install MataMask</p>
 				)}
 			</header>
-			<div className="table-container-matches">
+			<div className="table-container">
 				<table id="table-matches">
 					<thead>
 						<tr>
@@ -564,9 +564,7 @@ function App() {
 				</select>
 				<span style={{position: 'fixed', bottom: '55.3%', left: '86%', transform: 'translate(-50%, 50%)',fontSize: 20, color: 'white'}}>Ganador</span>	
 
-			</div>
-			<div>
-				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '30%', left: '7%', 
+				<button className='btn' onClick={openModal} style={{position: 'fixed', bottom: '40%', left: '7%', 
 						transform: 'translate(-50%, 50%)'}}>NFT Gallery</button>
 				<Modal
 					isOpen={modalIsOpen}
@@ -588,12 +586,7 @@ function App() {
 						<button className='btn' onClick={handleNextImage} style={{position: 'fixed', bottom: '10%', left: '88%', 
 									transform: 'translate(-50%, 50%)'}}>Next</button>
 					</div>
-					<div>
-
-					</div>
 				</Modal>
-			</div>
-			<div className="table-container-nfts">
 				<table className = "table" id = "table-nfts">
 					<thead>
 						<tr>
@@ -603,8 +596,7 @@ function App() {
 						</tr>
 					</thead>
 					<tbody>
-						{NFTRows()}	
-											
+						{NFTRows()}												
 					</tbody>
 				</table>
 				<button className='btn' onClick={BuyNFT} style={{position: 'fixed', bottom: '45%', left: '75%', transform: 'translate(-50%, 50%)'}}>Buy NFTs</button>
