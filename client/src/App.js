@@ -611,7 +611,7 @@ function App() {
 						
 					<button className='btn' onClick={ListNewNFT} style={{position: 'fixed', bottom: '35%', left: '75%', transform: 'translate(-50%, 50%)'}}>List new NFT</button>
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '36.8%', left: '82%', transform: 'translate(-0%, 50%)',}}>NFT Id</span>	
-						<input className='select-input'type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
+						<input className='select-input' type="number" min="0" step="1" value={list_nft_id} onChange={handleNFTid} style={{position: 'fixed', bottom: '36.5%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
 						<span className = 'txt-span' style={{position: 'fixed', bottom: '33.3%', left: '82%', transform: 'translate(-0%, 50%)',}}>Price</span>	
 						<input className='select-input'type="number" min="10" step="10" value={list_nft_price} onChange={handleNFTprice} style={{position: 'fixed', bottom: '33%', left: '87.5%', transform: 'translate(-0%, 50%)'}}/>
 						
